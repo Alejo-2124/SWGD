@@ -3,6 +3,8 @@
 <div class="dashboard-header">
     <h1>Panel de Administración</h1>
     <p>Gestión de documentos y pacientes</p>
+    <br>
+    
 </div>
 
 <?php if(isset($_GET['error'])): ?>
@@ -14,6 +16,50 @@
 <?php endif; ?>
 
 <div class="dashboard-grid">
+    <!-- Card Agregar Paciente -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Agregar Nuevo Paciente</h3>
+        </div>
+        <form action="<?php echo BASE_URL; ?>/patients/add" method="POST">
+            <div class="form-group">
+                <label for="nombre">Nombre Completo *</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" name="edad" class="form-control" min="0" max="120">
+            </div>
+
+            <div class="form-group">
+                <label for="genero">Género</label>
+                <select name="genero" id="genero" class="form-control">
+                    <option value="">Seleccionar...</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección</label>
+                <textarea id="direccion" name="direccion" class="form-control" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Agregar Paciente</button>
+        </form>
+    </div>
+
     <!-- Card Subida de Archivos -->
     <div class="card">
         <div class="card-header">
@@ -21,19 +67,20 @@
         </div>
         <form action="<?php echo BASE_URL; ?>/documents/upload" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="paciente_id">Seleccionar Paciente</label>
+                <label for="paciente_id">Seleccionar Paciente *</label>
                 <select name="paciente_id" id="paciente_id" class="form-control" required>
                     <option value="">-- Seleccione un paciente --</option>
                     <?php while($patient = $patients->fetch(PDO::FETCH_ASSOC)): ?>
                         <option value="<?php echo $patient['id']; ?>">
-                            <?php echo htmlspecialchars($patient['nombre']); ?> (<?php echo htmlspecialchars($patient['email']); ?>)
+                            <?php echo htmlspecialchars($patient['nombre']); ?> 
+                            (<?php echo htmlspecialchars($patient['email']); ?>)
                         </option>
                     <?php endwhile; ?>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="documento">Archivo</label>
+                <label for="documento">Archivo *</label>
                 <input type="file" name="documento" id="documento" class="form-control" required>
                 <small style="color: var(--text-secondary);">Formatos: PDF, JPG, PNG, DOC. Máx: 10MB</small>
             </div>
@@ -42,7 +89,7 @@
         </form>
     </div>
 
-    <!-- Card Estadísticas Rápidas (Placeholder) -->
+    <!-- Card Información del Sistema -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Información del Sistema</h3>
@@ -51,6 +98,10 @@
         <br>
         <p><strong>Usuario actual:</strong> <?php echo $_SESSION['user_name']; ?></p>
         <p><strong>Rol:</strong> Administrador</p>
+        
+        <div style="margin-top: 1rem;">
+            <a href="<?php echo BASE_URL; ?>/patients/list" class="btn btn-secondary">Ver Lista de Pacientes</a>
+        </div>
     </div>
 </div>
 

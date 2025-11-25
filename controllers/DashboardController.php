@@ -11,8 +11,11 @@ class DashboardController {
         $documentModel = new Document();
 
         if(isAdmin()) {
+            // Obtener pacientes y documentos
             $patients = $userModel->getAllPatients();
             $documents = $documentModel->getAllDocuments();
+            
+            // Pasar ambos a la vista
             require 'views/dashboard/admin.php';
         } else {
             $documents = $documentModel->getDocumentsByPatient($_SESSION['user_id']);

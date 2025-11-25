@@ -70,6 +70,17 @@ switch ($path) {
         $controller->delete();
         break;
 
+    // Nuevas rutas para gestión de pacientes
+    case 'patients/add':
+        $controller = new PatientController();
+        $controller->add();
+        break;
+
+    case 'patients/list':
+        $controller = new PatientController();
+        $controller->list();
+        break;
+
     default:
         http_response_code(404);
         require 'views/404.php';
