@@ -1,9 +1,30 @@
-<?php require 'views/layout/header.php'; ?>
+<?php 
+// Header especial para registro de médicos
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediRed - Registro Médicos</title>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/public/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="<?php echo BASE_URL; ?>" class="navbar-brand">
+            🏥 MediRed
+        </a>
+        <div class="nav-links">
+            <a href="<?php echo BASE_URL; ?>/login-patient">Acceso Pacientes</a>
+        </div>
+    </nav>
+    <div class="container">
 
 <div class="auth-container">
     <div class="auth-header">
         <h2>Crear Cuenta</h2>
-        <p>Regístrate en el sistema</p>
+        <p>Registro para personal médico</p>
     </div>
 
     <?php if(isset($error)): ?>
@@ -26,13 +47,7 @@
             <input type="password" id="password" name="password" class="form-control" required>
         </div>
 
-        <div class="form-group">
-            <label for="rol">Tipo de Usuario</label>
-            <select name="rol" id="rol" class="form-control">
-                <option value="paciente">Paciente</option>
-                <option value="admin">Personal Médico (Admin)</option>
-            </select>
-        </div>
+        <!-- Eliminado el campo de selección de tipo de usuario -->
 
         <button type="submit" class="btn btn-primary">Registrarse</button>
     </form>
@@ -42,4 +57,9 @@
     </p>
 </div>
 
-<?php require 'views/layout/footer.php'; ?>
+</div>
+    <footer class="footer">
+        <p>&copy; <?php echo date('Y'); ?> MediRed. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

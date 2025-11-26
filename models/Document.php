@@ -59,6 +59,9 @@ class Document {
         return $stmt;
     }
 
+    /**
+     * Obtener todos los documentos (para superadmin)
+     */
     public function getAllDocuments() {
         $query = "SELECT d.*, p.nombre as paciente_nombre, a.nombre as admin_nombre
                 FROM " . $this->table_name . " d
@@ -67,6 +70,24 @@ class Document {
                 ORDER BY d.fecha_subida DESC";
 
         $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    /**
+     * Obtener documentos de los pacientes de un médico específico
+     */
+    public function getDocumentsByDoctor($doctor_id) {
+        $query = "SELECT d.*, p.nombre as paciente_nombre, a.nombre as admin_nombre
+                FROM " . $this->table_name . " d
+                JOIN users p ON d.paciente_id = p.id
+                JOIN users a ON d.admin_id = a.id
+                WHERE p.created_by = ? OR d.admin_id = ?
+                ORDER BY d.fecha_subida DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $doctor_id);
+        $stmt->bindParam(2, $doctor_id);
         $stmt->execute();
         return $stmt;
     }

@@ -8,6 +8,15 @@ class DocumentController {
         }
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Verificar que el paciente pertenezca al médico
+            $userModel = new User();
+            $paciente_id = $_POST['paciente_id'] ?? '';
+            
+            if(!$userModel->isPatientOfDoctor($paciente_id, $_SESSION['user_id'])) {
+                redirect('dashboard?error=' . urlencode("No tiene permisos para subir documentos para este paciente."));
+                return;
+            }
+
             if(isset($_FILES['documento']) && $_FILES['documento']['error'] === 0) {
                 $file = $_FILES['documento'];
                 $paciente_id = $_POST['paciente_id'];
@@ -15,7 +24,6 @@ class DocumentController {
                 // Validaciones
                 if(!checkFileType($file['type'])) {
                     $error = "Tipo de archivo no permitido.";
-                    // Redirigir con error (en una implementación real usaríamos sesiones flash)
                     redirect('dashboard?error=' . urlencode($error));
                     return;
                 }
@@ -64,15 +72,24 @@ class DocumentController {
         if(!$id) redirect('dashboard');
 
         $documentModel = new Document();
+        $userModel = new User();
         $doc = $documentModel->getDocumentById($id);
 
         if(!$doc) {
             die("Documento no encontrado.");
         }
 
-        // Verificar permisos: Admin o el propio paciente
-        if(!isAdmin() && $doc['paciente_id'] != $_SESSION['user_id']) {
-            die("Acceso denegado.");
+        // Verificar permisos según el rol
+        if(isAdmin()) {
+            // Médico: solo puede descargar documentos de sus pacientes
+            if(!$userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
+                die("Acceso denegado. No tiene permisos para este documento.");
+            }
+        } else {
+            // Paciente: solo puede descargar sus propios documentos
+            if($doc['paciente_id'] != $_SESSION['user_id']) {
+                die("Acceso denegado.");
+            }
         }
 
         $filepath = UPLOAD_DIR . $doc['ruta'];
@@ -99,11 +116,19 @@ class DocumentController {
 
         $id = $_GET['id'] ?? null;
         if($id) {
-            $document = new Document();
-            if($document->deleteDocument($id)) {
-                redirect('dashboard?success=' . urlencode("Documento eliminado."));
+            // Verificar permisos antes de eliminar
+            $documentModel = new Document();
+            $userModel = new User();
+            $doc = $documentModel->getDocumentById($id);
+            
+            if($doc && $userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
+                if($documentModel->deleteDocument($id)) {
+                    redirect('dashboard?success=' . urlencode("Documento eliminado."));
+                } else {
+                    redirect('dashboard?error=' . urlencode("Error al eliminar documento."));
+                }
             } else {
-                redirect('dashboard?error=' . urlencode("Error al eliminar documento."));
+                redirect('dashboard?error=' . urlencode("No tiene permisos para eliminar este documento."));
             }
         } else {
             redirect('dashboard');

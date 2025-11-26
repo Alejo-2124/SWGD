@@ -27,6 +27,18 @@ $path = trim($path, '/');
 // Rutas
 switch ($path) {
     case '':
+        // Página de inicio - redirigir al login apropiado
+        if(isLoggedIn()) {
+            if($_SESSION['user_role'] === 'paciente') {
+                redirect('dashboard-patient');
+            } else {
+                redirect('dashboard');
+            }
+        } else {
+            redirect('login');
+        }
+        break;
+        
     case 'login':
         $controller = new AuthController();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -36,6 +48,15 @@ switch ($path) {
         }
         break;
         
+    case 'login-patient': // Cambiado de 'login-pacientes' a 'login-patient'
+        $controller = new AuthController();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controller->loginPatient(); // Cambiado de loginPacientes a loginPatient
+        } else {
+            $controller->showLoginPatient(); // Cambiado de showLoginPacientes a showLoginPatient
+        }
+        break;
+
     case 'register':
         $controller = new AuthController();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -52,7 +73,12 @@ switch ($path) {
 
     case 'dashboard':
         $controller = new DashboardController();
-        $controller->index();
+        $controller->indexAdmin();
+        break;
+
+    case 'dashboard-patient': // Cambiado de 'dashboard-paciente' a 'dashboard-patient'
+        $controller = new DashboardController();
+        $controller->indexPatient(); // Cambiado de indexPaciente a indexPatient
         break;
 
     case 'documents/upload':
@@ -70,7 +96,7 @@ switch ($path) {
         $controller->delete();
         break;
 
-    // Nuevas rutas para gestión de pacientes
+    // Rutas para gestión de pacientes
     case 'patients/add':
         $controller = new PatientController();
         $controller->add();

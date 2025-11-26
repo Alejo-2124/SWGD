@@ -2,6 +2,9 @@
 
 class AuthController {
     
+    /**
+     * Mostrar login para médicos/admin
+     */
     public function showLogin() {
         if(isLoggedIn()) {
             redirect('dashboard');
@@ -9,13 +12,23 @@ class AuthController {
         require 'views/auth/login.php';
     }
 
+    /**
+     * Procesar login para médicos/admin
+     */
     public function login() {
         $user = new User();
         $user->email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
         if($user->emailExists() && password_verify($password, $user->password)) {
-            // Asegurar que la sesión esté iniciada
+            // Verificar que sea admin o médico
+            if($user->rol !== 'admin') {
+                $error = "Acceso solo para personal médico autorizado.";
+                require 'views/auth/login.php';
+                return;
+            }
+
+            // Iniciar sesión segura
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
@@ -23,8 +36,8 @@ class AuthController {
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_name'] = $user->nombre;
             $_SESSION['user_role'] = $user->rol;
-            
-            // Regenerar ID de sesión por seguridad
+            $_SESSION['user_email'] = $user->email; 
+            // Regenerar ID por seguridad
             session_regenerate_id(true);
             
             redirect('dashboard');
@@ -34,6 +47,58 @@ class AuthController {
         }
     }
 
+    /**
+     * Mostrar login para pacientes
+     */
+    public function showLoginPatient() {
+        if(isLoggedIn()) {
+            if($_SESSION['user_role'] === 'paciente') {
+                redirect('dashboard-patient');
+            } else {
+                redirect('dashboard');
+            }
+        }
+        require 'views/auth/login_patient.php';
+    }
+
+    /**
+     * Procesar login para pacientes
+     */
+    public function loginPatient() {
+        $user = new User();
+        $user->email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if($user->emailExists() && password_verify($password, $user->password)) {
+            // Verificar que sea paciente
+            if($user->rol !== 'paciente') {
+                $error = "Acceso solo para pacientes.";
+                require 'views/auth/login_patient.php';
+                return;
+            }
+
+            // Iniciar sesión segura
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->nombre;
+            $_SESSION['user_role'] = $user->rol;
+            
+            // Regenerar ID por seguridad
+            session_regenerate_id(true);
+            
+            redirect('dashboard-patient');
+        } else {
+            $error = "Credenciales inválidas.";
+            require 'views/auth/login_patient.php';
+        }
+    }
+
+    /**
+     * Mostrar registro para médicos/admin
+     */
     public function showRegister() {
         if(isLoggedIn()) {
             redirect('dashboard');
@@ -41,12 +106,15 @@ class AuthController {
         require 'views/auth/register.php';
     }
 
+    /**
+     * Procesar registro para médicos/admin
+     */
     public function register() {
         $user = new User();
         $user->nombre = $_POST['nombre'] ?? '';
         $user->email = $_POST['email'] ?? '';
         $user->password = $_POST['password'] ?? '';
-        $user->rol = $_POST['rol'] ?? 'paciente';
+        $user->rol = 'admin'; // Siempre admin para registro público
 
         // Validación básica
         if(empty($user->nombre) || empty($user->email) || empty($user->password)) {
@@ -70,7 +138,13 @@ class AuthController {
         }
     }
 
+    /**
+     * Cerrar sesión
+     */
     public function logout() {
+        // Guardar el rol del usuario antes de destruir la sesión
+        $user_role = $_SESSION['user_role'] ?? null;
+        
         // Limpiar todas las variables de sesión
         $_SESSION = array();
         
@@ -86,6 +160,11 @@ class AuthController {
         // Finalmente, destruir la sesión
         session_destroy();
         
-        redirect('login');
+        // Redirigir según el tipo de usuario
+        if ($user_role === 'paciente') {
+            redirect('login-patient');
+        } else {
+            redirect('login');
+        }
     }
 }

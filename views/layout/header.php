@@ -10,16 +10,23 @@
 <body>
     <nav class="navbar">
         <a href="<?php echo BASE_URL; ?>" class="navbar-brand">
-            <?php echo APP_NAME; ?>
+            🏥 <?php echo APP_NAME; ?>
         </a>
         <div class="nav-links">
             <?php if(isLoggedIn()): ?>
                 <span>Hola, <?php echo $_SESSION['user_name']; ?></span>
-                <a href="<?php echo BASE_URL; ?>/dashboard">Dashboard</a>
+                <?php if($_SESSION['user_role'] === 'admin'): ?>
+                    <a href="<?php echo BASE_URL; ?>/dashboard">Dashboard Médico</a>
+                    <a href="<?php echo BASE_URL; ?>/patients/list">Lista de Pacientes</a>
+                <?php else: ?>
+                    <a href="<?php echo BASE_URL; ?>/dashboard-patient">Mi Historial</a>
+                <?php endif; ?>
                 <a href="<?php echo BASE_URL; ?>/logout">Cerrar Sesión</a>
             <?php else: ?>
-                <a href="<?php echo BASE_URL; ?>/login">Iniciar Sesión</a>
-                <a href="<?php echo BASE_URL; ?>/register">Registrarse</a>
+                <!-- Enlaces para usuarios no logueados (cuando se usa header normal) -->
+                <a href="<?php echo BASE_URL; ?>/login">Acceso Médicos</a>
+                <a href="<?php echo BASE_URL; ?>/login-patient">Acceso Pacientes</a>
+                <a href="<?php echo BASE_URL; ?>/register">Registro Médicos</a>
             <?php endif; ?>
         </div>
     </nav>

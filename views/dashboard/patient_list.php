@@ -2,20 +2,20 @@
 
 <div class="dashboard-header">
     <h1>Lista de Pacientes</h1>
-    <p>Gestión de pacientes del sistema</p>
-    <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Volver al Dashboard</a>
+    <p>Gestión completa de pacientes del sistema</p>
+    <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">← Volver al Dashboard</a>
 </div>
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Pacientes Registrados</h3>
+        <h3 class="card-title">Pacientes Registrados en el Sistema</h3>
     </div>
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
+                    <th>Nombre Completo</th>
                     <th>Email</th>
                     <th>Edad</th>
                     <th>Género</th>
@@ -25,12 +25,11 @@
             </thead>
             <tbody>
                 <?php 
-                // Reiniciar el statement para poder iterar desde el inicio
-                $patients->execute();
-                $allPatients = $patients->fetchAll(PDO::FETCH_ASSOC);
+                // Obtener todos los pacientes como array
+                $patients_data = $patients->fetchAll(PDO::FETCH_ASSOC);
                 
-                if(count($allPatients) > 0): ?>
-                    <?php foreach($allPatients as $patient): ?>
+                if(count($patients_data) > 0): ?>
+                    <?php foreach($patients_data as $patient): ?>
                         <tr>
                             <td><?php echo $patient['id']; ?></td>
                             <td><?php echo htmlspecialchars($patient['nombre']); ?></td>
@@ -65,7 +64,7 @@
                             <td>
                                 <?php 
                                 if (isset($patient['created_at']) && !empty($patient['created_at'])) {
-                                    echo date('d/m/Y H:i', strtotime($patient['created_at']));
+                                    echo date('d/m/Y', strtotime($patient['created_at']));
                                 } else {
                                     echo '<span style="color: #999;">N/A</span>';
                                 }
@@ -75,7 +74,9 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7" style="text-align: center;">No hay pacientes registrados.</td>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            No hay pacientes registrados en el sistema.
+                        </td>
                     </tr>
                 <?php endif; ?>
             </tbody>

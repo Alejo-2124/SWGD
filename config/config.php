@@ -2,17 +2,14 @@
 
 // Configuración de la aplicación
 define('BASE_URL', 'http://localhost:8080');
-define('APP_NAME', 'Medical DMS');
+define('APP_NAME', 'MediRed');
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
 
 // Configuración de sesión - SOLO si no hay sesión activa
 if (session_status() === PHP_SESSION_NONE) {
-    // Solo configuramos sesiones si no están activas
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
-    ini_set('session.cookie_secure', 0); // Cambiar a 1 si se usa HTTPS
-    
-    // Configuración adicional de seguridad
+    ini_set('session.cookie_secure', 0);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', 'Lax');
 }

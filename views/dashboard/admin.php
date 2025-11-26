@@ -1,10 +1,8 @@
 <?php require 'views/layout/header.php'; ?>
 
 <div class="dashboard-header">
-    <h1>Panel de Administración</h1>
-    <p>Gestión de documentos y pacientes</p>
-    <br>
-    
+    <h1>Panel Médico - <?php echo $_SESSION['user_name']; ?></h1>
+    <p>Gestión de sus pacientes y documentos</p>
 </div>
 
 <?php if(isset($_GET['error'])): ?>
@@ -43,6 +41,7 @@
                     <option value="">Seleccionar...</option>
                     <option value="masculino">Masculino</option>
                     <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
                 </select>
             </div>
 
@@ -70,12 +69,16 @@
                 <label for="paciente_id">Seleccionar Paciente *</label>
                 <select name="paciente_id" id="paciente_id" class="form-control" required>
                     <option value="">-- Seleccione un paciente --</option>
-                    <?php while($patient = $patients->fetch(PDO::FETCH_ASSOC)): ?>
+                    <?php 
+                    // Reiniciar el resultset para iterar de nuevo
+                    $patients_data = $patients->fetchAll(PDO::FETCH_ASSOC);
+                    foreach($patients_data as $patient): 
+                    ?>
                         <option value="<?php echo $patient['id']; ?>">
                             <?php echo htmlspecialchars($patient['nombre']); ?> 
                             (<?php echo htmlspecialchars($patient['email']); ?>)
                         </option>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
@@ -92,22 +95,23 @@
     <!-- Card Información del Sistema -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Información del Sistema</h3>
+            <h3 class="card-title">Mi Información</h3>
         </div>
-        <p>Bienvenido al panel de control. Desde aquí puede gestionar los documentos médicos de todos los pacientes registrados en el sistema.</p>
+        <p>Bienvenido al panel médico. Desde aquí puede gestionar los documentos médicos de sus pacientes.</p>
         <br>
-        <p><strong>Usuario actual:</strong> <?php echo $_SESSION['user_name']; ?></p>
-        <p><strong>Rol:</strong> Administrador</p>
+        <p><strong>Médico:</strong> <?php echo $_SESSION['user_name']; ?></p>
+        <p><strong>Email:</strong> <?php echo $_SESSION['user_email'] ?></p>
+        <p><strong>Total pacientes:</strong> <?php echo count($patients_data); ?></p>
         
         <div style="margin-top: 1rem;">
-            <a href="<?php echo BASE_URL; ?>/patients/list" class="btn btn-secondary">Ver Lista de Pacientes</a>
+            <a href="<?php echo BASE_URL; ?>/patients/list" class="btn btn-secondary">Ver Mis Pacientes</a>
         </div>
     </div>
 </div>
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Documentos Recientes</h3>
+        <h3 class="card-title">Documentos Recientes de Mis Pacientes</h3>
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -138,7 +142,7 @@
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="6" style="text-align: center;">No hay documentos registrados.</td>
+                        <td colspan="6" style="text-align: center;">No hay documentos registrados para sus pacientes.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
