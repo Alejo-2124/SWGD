@@ -1,7 +1,7 @@
 <?php require 'views/layout/header.php'; ?>
 
 <div class="dashboard-header">
-    <h1>Panel Médico - <?php echo $_SESSION['user_name']; ?></h1>
+    <h1>Panel Médicooooooo - <?php echo $_SESSION['user_name']; ?></h1>
     <p>Gestión de sus pacientes y documentos</p>
 </div>
 
