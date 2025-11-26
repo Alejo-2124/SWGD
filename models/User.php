@@ -357,7 +357,7 @@ class User {
      */
     public function isPatientOfDoctor($patient_id, $doctor_id) {
         $query = "SELECT id FROM " . $this->table_name . " 
-                  WHERE id = ? AND rol = 'paciente' AND created_by = ?";
+                    WHERE id = ? AND rol = 'paciente' AND created_by = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $patient_id);
         $stmt->bindParam(2, $doctor_id);

@@ -1,16 +1,20 @@
 :root {
   /* Medical Color Palette */
-  --primary-color: #2c5f8d; /* Azul médico profundo */
-  --secondary-color: #4a90a4; /* Azul verdoso suave */
-  --accent-color: #27ae60; /* Verde éxito/salud */
-  --background-color: #f4f7f6; /* Gris muy claro, aséptico */
-  --surface-color: #ffffff;
-  --text-primary: #2c3e50;
-  --text-secondary: #7f8c8d;
-  --danger-color: #e74c3c;
-  --border-radius: 8px;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --primary-color: #2c5f8d; /* Azul médico profundo - usado en botones, encabezados, elementos principales */
+  --secondary-color: #4a90a4; /* Azul verdoso suave - usado en elementos secundarios */
+  --accent-color: #27ae60; /* Verde éxito/salud - usado en mensajes de éxito, indicadores positivos */
+  --background-color: #f4f7f6; /* Gris muy claro, aséptico - fondo principal de la aplicación */
+  --surface-color: #ffffff; /* Color de superficie para cards, tablas, contenedores */
+  --text-primary: #2c3e50; /* Color principal del texto */
+  --text-secondary: #7f8c8d; /* Color secundario del texto, textos menos importantes */
+  --danger-color: #e74c3c; /* Color para acciones peligrosas, errores, botones eliminar */
+  --border-radius: 8px; /* Radio de bordes estándar para botones, cards, inputs */
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Sombra estándar para cards, elementos elevados */
 }
+
+/* ==========================================================================
+    ESTILOS GENERALES - Aplican a toda la aplicación
+   ========================================================================== */
 
 * {
   box-sizing: border-box;
@@ -28,7 +32,11 @@ body {
   flex-direction: column;
 }
 
-/* Layout */
+/* ==========================================================================
+   COMPONENTES DE LAYOUT - Navbar, Footer, Container
+   ========================================================================== */
+
+/* Navbar - Aparece en todas las páginas (header.php) */
 .navbar {
   background-color: var(--surface-color);
   box-shadow: var(--shadow);
@@ -62,6 +70,7 @@ body {
   color: var(--primary-color);
 }
 
+/* Container principal - Usado en todas las páginas */
 .container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -70,7 +79,162 @@ body {
   width: 100%;
 }
 
-/* Auth Pages */
+/* Footer - Aparece en todas las páginas (footer.php) */
+.footer {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: auto;
+  border-top: 1px solid #eee;
+}
+
+/* ==========================================================================
+   COMPONENTES DE FORMULARIOS - Inputs, Botones, Labels
+   ========================================================================== */
+
+/* Grupos de formularios - Usado en login.php, register.php, admin.php */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(44, 95, 141, 0.25);
+}
+
+/* Botones - Usados en toda la aplicación */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
+  font-weight: 600;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #1a3c5a;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #3a7a8c;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   COMPONENTES DE ALERTAS - Mensajes de éxito y error
+   ========================================================================== */
+
+/* Alertas - Usadas en login.php, admin.php, patient_list.php */
+.alert {
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.alert-danger {
+  background-color: #fcebea;
+  color: var(--danger-color);
+  border-color: #f8caca;
+}
+
+.alert-success {
+  background-color: #eafaf1;
+  color: var(--accent-color);
+  border-color: #d5f5e3;
+}
+
+/* ==========================================================================
+   COMPONENTES DE CARDS - Contenedores de contenido
+   ========================================================================== */
+
+/* Cards - Usadas en admin.php, patient.php, patient_list.php */
+.card {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.card-title {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   PÁGINAS DE AUTENTICACIÓN - login.php, register.php, login_patient.php
+   ========================================================================== */
+
+/* Contenedor de autenticación - Usado en páginas de login y registro */
 .auth-container {
   max-width: 400px;
   margin: 4rem auto;
@@ -87,90 +251,48 @@ body {
 
 .auth-header h2 {
   color: var(--primary-color);
-}
-
-/* Forms */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
   margin-bottom: 0.5rem;
-  color: var(--primary-color); 
 }
 
-.form-control {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  transition: border-color 0.3s;
+.auth-header p {
+  color: var(--text-secondary);
 }
 
-.form-control:focus {
-  border-color: var(--secondary-color);
-  outline: none;
+/* ==========================================================================
+   DASHBOARD Y COMPONENTES PRINCIPALES - admin.php, patient.php
+   ========================================================================== */
+
+/* Header del dashboard - Usado en admin.php, patient.php, patient_list.php */
+.dashboard-header {
+  margin-bottom: 2rem;
 }
 
-.btn {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: background-color 0.3s;
-  text-align: center;
+.dashboard-header h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-  width: 100%;
+.dashboard-header p {
+  color: var(--text-secondary);
 }
 
-.btn-primary:hover {
-  background-color: #1a3c5a;
+.header-actions {
+  margin-top: 1rem;
 }
 
-.btn-secondary {
-  background-color: var(--secondary-color);
-  color: white;
+/* Grid del dashboard - Usado en admin.php para organizar cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
-.btn-danger {
-  background-color: var(--danger-color);
-  color: white;
-}
+/* ==========================================================================
+   COMPONENTES DE TABLAS - Usados en múltiples páginas
+   ========================================================================== */
 
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-}
-
-/* Alerts */
-.alert {
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 1rem;
-}
-
-.alert-danger {
-  background-color: #fcebea;
-  color: var(--danger-color);
-  border: 1px solid #f8caca;
-}
-
-.alert-success {
-  background-color: #eafaf1;
-  color: var(--accent-color);
-  border: 1px solid #d5f5e3;
-}
-
-/* Tables */
+/* Tablas responsive - Usadas en admin.php, patient.php, patient_list.php */
 .table-responsive {
   overflow-x: auto;
 }
@@ -195,108 +317,325 @@ body {
   background-color: #f8f9fa;
   color: var(--primary-color);
   font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .table tr:hover {
   background-color: #f8f9fa;
 }
 
-/* Footer */
-.footer {
-  background-color: var(--surface-color);
-  padding: 1.5rem;
-  text-align: center;
-  color: var(--text-secondary);
-  margin-top: auto;
-  border-top: 1px solid #eee;
+/* Badges - Usados en patient_list.php para contadores */
+.badge {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-block;
 }
 
-/* Dashboard Cards */
-.dashboard-grid {
+/* ==========================================================================
+   PÁGINA PATIENT_LIST.PHP - Lista de pacientes con documentos
+   ========================================================================== */
+
+/* Grid de búsqueda - Solo en patient_list.php */
+.search-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1fr auto auto;
+  gap: 1.5rem;
+  align-items: end;
 }
 
-.card {
-  background: var(--surface-color);
+.search-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-results {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #e8f4fd;
+  border-radius: 4px;
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Tabla de pacientes específica para patient_list.php */
+.patients-table {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Filas alternadas para mejor legibilidad en patient_list.php */
+.patients-table .patient-row.even {
+  background-color: #ffffff;
+}
+
+.patients-table .patient-row.odd {
+  background-color: #f8f9fa;
+}
+
+.patients-table .patient-row:hover {
+  background-color: #e3f2fd !important;
+}
+
+.patients-table .documents-row.even {
+  background-color: #fafbfc;
+}
+
+.patients-table .documents-row.odd {
+  background-color: #f1f3f4;
+}
+
+/* Estilo para el nombre del paciente en patient_list.php */
+.patient-name {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* Bordes y separación mejorados en patient_list.php */
+.patients-table th,
+.patients-table td {
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem 0.75rem;
+}
+
+.patients-table .patient-row {
+  border-bottom: 2px solid #ced4da;
+}
+
+.patients-table .documents-row {
+  border-bottom: 3px solid #adb5bd;
+}
+
+/* Contador de documentos en patient_list.php */
+.document-count {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Sección de documentos expandible en patient_list.php */
+.documents-cell {
+  padding: 0 !important;
+  border-top: none;
+}
+
+.documents-container {
   padding: 1.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
+  border-top: 2px solid #e9ecef;
 }
 
-.card-header {
+.documents-container h4 {
+  color: var(--primary-color);
   margin-bottom: 1rem;
+  font-size: 1.1rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 0.5rem;
 }
 
-.card-title {
+/* Tabla de documentos dentro de patient_list.php */
+.documents-table-container {
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+}
+
+.documents-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+
+.documents-table th {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
   color: var(--primary-color);
-  font-size: 1.25rem;
+  border-bottom: 1px solid #dee2e6;
 }
 
-/* Mejoras para el buscador y tablas */
-.badge {
-    background: var(--primary-color);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    display: inline-block;
+.documents-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
 }
 
-.search-container {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 2rem;
+.documents-table tr:last-child td {
+  border-bottom: none;
 }
 
-.search-grid {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 1rem;
-    align-items: end;
+/* Iconos para documentos en patient_list.php */
+.document-icon {
+  margin-right: 0.5rem;
+  font-size: 1.1em;
 }
+
+/* Acciones de documentos en patient_list.php */
+.document-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Estado cuando no hay documentos en patient_list.php */
+.no-documents {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  background: white;
+  border-radius: 6px;
+  border: 1px dashed #dee2e6;
+}
+
+/* Estados de no disponible en patient_list.php */
+.na {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Estado cuando no hay pacientes en patient_list.php */
+.no-patients {
+  text-align: center;
+  padding: 3rem !important;
+}
+
+.no-results {
+  color: #666;
+}
+
+.no-results h4 {
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+/* ==========================================================================
+   ESTILOS RESPONSIVE - Adaptaciones para móviles y tablets
+   ========================================================================== */
 
 @media (max-width: 768px) {
-    .search-grid {
-        grid-template-columns: 1fr;
-    }
+  /* Responsive para grid de búsqueda en patient_list.php */
+  .search-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-actions {
+    justify-content: stretch;
+  }
+  
+  .search-actions .btn {
+    flex: 1;
+  }
+  
+  /* Responsive para acciones de documentos en patient_list.php */
+  .document-actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .btn-sm {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Responsive para tablas en patient_list.php */
+  .patients-table th,
+  .patients-table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .documents-container {
+    padding: 1rem;
+  }
+  
+  .documents-table {
+    font-size: 0.875rem;
+  }
+  
+  .documents-table th,
+  .documents-table td {
+    padding: 0.5rem;
+  }
 }
 
-.table th {
-    background-color: #f8f9fa;
-    color: var(--primary-color);
-    font-weight: 600;
-    border-bottom: 2px solid #dee2e6;
+@media (max-width: 480px) {
+  /* Responsive para botones en móviles pequeños */
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn-sm {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Responsive para navbar en móviles */
+  .navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .nav-links a {
+    margin-left: 0;
+  }
 }
 
-.table td {
-    vertical-align: middle;
+/* ==========================================================================
+   ESTILOS PARA INFORMACIÓN DEL PACIENTE - patient.php
+   ========================================================================== */
+
+/* Grid de información del paciente en patient.php */
+.patient-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
-/* Estados de la tabla */
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-    transition: background-color 0.2s ease;
+/* ==========================================================================
+   UTILIDADES - Clases helper para estados específicos
+   ========================================================================== */
+
+.text-center {
+  text-align: center;
 }
 
-/* Mejoras para formularios */
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(44, 95, 141, 0.25);
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.hidden {
+  display: none;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+/* ==========================================================================
+   ANIMACIONES Y TRANSICIONES
+   ========================================================================== */
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
 }
 
-.btn-primary:hover {
-    background-color: #1a3c5a;
-    border-color: #1a3c5a;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

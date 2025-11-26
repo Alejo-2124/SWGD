@@ -123,15 +123,16 @@ class DocumentController {
             
             if($doc && $userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
                 if($documentModel->deleteDocument($id)) {
-                    redirect('dashboard?success=' . urlencode("Documento eliminado."));
+                    // CAMBIO: Redirigir a patient_list en lugar de dashboard
+                    redirect('patients/list?success=' . urlencode("Documento eliminado correctamente."));
                 } else {
-                    redirect('dashboard?error=' . urlencode("Error al eliminar documento."));
+                    redirect('patients/list?error=' . urlencode("Error al eliminar documento."));
                 }
             } else {
-                redirect('dashboard?error=' . urlencode("No tiene permisos para eliminar este documento."));
+                redirect('patients/list?error=' . urlencode("No tiene permisos para eliminar este documento."));
             }
         } else {
-            redirect('dashboard');
+            redirect('patients/list');
         }
     }
 }

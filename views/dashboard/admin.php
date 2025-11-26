@@ -26,6 +26,11 @@
             </div>
 
             <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" name="edad" class="form-control" min="0" max="120">
+            </div>
+
+            <div class="form-group">
                 <label for="cedula">Cédula de Identidad *</label>
                 <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ingrese la cédula del paciente" required>
                 <small style="color: var(--text-secondary);">La cédula debe ser única para cada paciente</small>
@@ -34,11 +39,6 @@
             <div class="form-group">
                 <label for="email">Email *</label>
                 <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="edad">Edad</label>
-                <input type="number" id="edad" name="edad" class="form-control" min="0" max="120">
             </div>
 
             <div class="form-group">
@@ -109,9 +109,7 @@
         <p><strong>Email:</strong> <?php echo $_SESSION['user_email'] ?></p>
         <p><strong>Total pacientes:</strong> <?php echo count($patients_data); ?></p>
         
-        <div style="margin-top: 1rem;">
-            <a href="<?php echo BASE_URL; ?>/patients/list" class="btn btn-secondary">Ver Mis Pacientes</a>
-        </div>
+        
     </div>
 </div>
 
