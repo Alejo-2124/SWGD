@@ -13,6 +13,7 @@ class User {
     public $genero;
     public $telefono;
     public $direccion;
+    public $cedula;
     public $created_by;
 
     public function __construct() {
@@ -46,6 +47,9 @@ class User {
         if (in_array('direccion', $columns)) {
             $query .= ", direccion = :direccion";
         }
+        if (in_array('cedula', $columns)) {
+            $query .= ", cedula = :cedula";
+        }
         if (in_array('created_by', $columns) && isset($this->created_by)) {
             $query .= ", created_by = :created_by";
         }
@@ -77,6 +81,9 @@ class User {
         if (in_array('direccion', $columns)) {
             $stmt->bindParam(":direccion", $this->direccion);
         }
+        if (in_array('cedula', $columns)) {
+            $stmt->bindParam(":cedula", $this->cedula);
+        }
         if (in_array('created_by', $columns) && isset($this->created_by)) {
             $stmt->bindParam(":created_by", $this->created_by);
         }
@@ -107,6 +114,9 @@ class User {
         }
         if (in_array('direccion', $columns)) {
             $base_columns .= ", direccion";
+        }
+        if (in_array('cedula', $columns)) {
+            $base_columns .= ", cedula";
         }
         if (in_array('created_by', $columns)) {
             $base_columns .= ", created_by";
@@ -142,6 +152,9 @@ class User {
             if (in_array('direccion', $columns) && isset($row['direccion'])) {
                 $this->direccion = $row['direccion'];
             }
+            if (in_array('cedula', $columns) && isset($row['cedula'])) {
+                $this->cedula = $row['cedula'];
+            }
             if (in_array('created_by', $columns) && isset($row['created_by'])) {
                 $this->created_by = $row['created_by'];
             }
@@ -149,6 +162,66 @@ class User {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Verificar si la cédula existe
+     */
+    public function cedulaExists($cedula) {
+        $query = "SELECT id FROM " . $this->table_name . " WHERE cedula = ? LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $cedula);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Obtener pacientes creados por un médico específico con filtros de búsqueda
+     */
+    public function getPatientsByDoctor($doctor_id, $search = '', $filter_type = 'nombre') {
+        $columns = $this->getTableColumns();
+        
+        $base_columns = "id, nombre, email, created_at";
+        if (in_array('edad', $columns)) {
+            $base_columns .= ", edad";
+        }
+        if (in_array('genero', $columns)) {
+            $base_columns .= ", genero";
+        }
+        if (in_array('telefono', $columns)) {
+            $base_columns .= ", telefono";
+        }
+        if (in_array('direccion', $columns)) {
+            $base_columns .= ", direccion";
+        }
+        if (in_array('cedula', $columns)) {
+            $base_columns .= ", cedula";
+        }
+        
+        $query = "SELECT " . $base_columns . " FROM " . $this->table_name . " 
+                  WHERE rol = 'paciente' AND created_by = ?";
+        
+        // Aplicar filtros de búsqueda
+        if (!empty($search)) {
+            if ($filter_type === 'cedula') {
+                $query .= " AND cedula LIKE ?";
+            } else {
+                $query .= " AND nombre LIKE ?";
+            }
+        }
+        
+        $query .= " ORDER BY nombre";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $doctor_id);
+        
+        if (!empty($search)) {
+            $search_term = '%' . $search . '%';
+            $stmt->bindParam(2, $search_term);
+        }
+        
+        $stmt->execute();
+        return $stmt;
     }
 
     /**
@@ -170,42 +243,12 @@ class User {
         if (in_array('direccion', $columns)) {
             $base_columns .= ", direccion";
         }
-        if (in_array('created_by', $columns)) {
-            $base_columns .= ", created_by";
+        if (in_array('cedula', $columns)) {
+            $base_columns .= ", cedula";
         }
         
         $query = "SELECT " . $base_columns . " FROM " . $this->table_name . " WHERE rol = 'paciente' ORDER BY nombre";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    /**
-     * Obtener pacientes creados por un médico específico
-     */
-    public function getPatientsByDoctor($doctor_id) {
-        $columns = $this->getTableColumns();
-        
-        $base_columns = "id, nombre, email, created_at";
-        if (in_array('edad', $columns)) {
-            $base_columns .= ", edad";
-        }
-        if (in_array('genero', $columns)) {
-            $base_columns .= ", genero";
-        }
-        if (in_array('telefono', $columns)) {
-            $base_columns .= ", telefono";
-        }
-        if (in_array('direccion', $columns)) {
-            $base_columns .= ", direccion";
-        }
-        
-        $query = "SELECT " . $base_columns . " FROM " . $this->table_name . " 
-                    WHERE rol = 'paciente' AND created_by = ? 
-                    ORDER BY nombre";
-        
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $doctor_id);
         $stmt->execute();
         return $stmt;
     }
@@ -222,7 +265,8 @@ class User {
         $this->genero = $data['genero'] ?? '';
         $this->telefono = $data['telefono'] ?? '';
         $this->direccion = $data['direccion'] ?? '';
-        $this->created_by = $_SESSION['user_id']; // El médico que está creando al paciente
+        $this->cedula = $data['cedula'] ?? '';
+        $this->created_by = $_SESSION['user_id'];
 
         return $this->register();
     }
@@ -246,10 +290,13 @@ class User {
         if (in_array('direccion', $columns)) {
             $base_columns .= ", direccion";
         }
+        if (in_array('cedula', $columns)) {
+            $base_columns .= ", cedula";
+        }
         
         $query = "SELECT " . $base_columns . " 
-                    FROM " . $this->table_name . " 
-                    WHERE id = ? AND rol = 'paciente'";
+                  FROM " . $this->table_name . " 
+                  WHERE id = ? AND rol = 'paciente'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $id);
         $stmt->execute();
@@ -260,17 +307,6 @@ class User {
         return false;
     }
     
-    /**
-     * Obtener columnas de la tabla
-     */
-    private function getTableColumns() {
-        $query = "SHOW COLUMNS FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        return $columns;
-    }
-
     /**
      * Obtener información del usuario actual
      */
@@ -290,6 +326,9 @@ class User {
         if (in_array('direccion', $columns)) {
             $base_columns .= ", direccion";
         }
+        if (in_array('cedula', $columns)) {
+            $base_columns .= ", cedula";
+        }
         
         $query = "SELECT " . $base_columns . " FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
@@ -303,11 +342,22 @@ class User {
     }
 
     /**
+     * Obtener columnas de la tabla
+     */
+    private function getTableColumns() {
+        $query = "SHOW COLUMNS FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $columns;
+    }
+
+    /**
      * Verificar si un paciente pertenece a un médico específico
      */
     public function isPatientOfDoctor($patient_id, $doctor_id) {
         $query = "SELECT id FROM " . $this->table_name . " 
-                    WHERE id = ? AND rol = 'paciente' AND created_by = ?";
+                  WHERE id = ? AND rol = 'paciente' AND created_by = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $patient_id);
         $stmt->bindParam(2, $doctor_id);

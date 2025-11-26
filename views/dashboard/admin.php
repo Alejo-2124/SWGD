@@ -26,6 +26,12 @@
             </div>
 
             <div class="form-group">
+                <label for="cedula">Cédula de Identidad *</label>
+                <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ingrese la cédula del paciente" required>
+                <small style="color: var(--text-secondary);">La cédula debe ser única para cada paciente</small>
+            </div>
+
+            <div class="form-group">
                 <label for="email">Email *</label>
                 <input type="email" id="email" name="email" class="form-control" required>
             </div>

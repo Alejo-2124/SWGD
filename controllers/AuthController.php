@@ -109,34 +109,43 @@ class AuthController {
     /**
      * Procesar registro para médicos/admin
      */
-    public function register() {
-        $user = new User();
-        $user->nombre = $_POST['nombre'] ?? '';
-        $user->email = $_POST['email'] ?? '';
-        $user->password = $_POST['password'] ?? '';
-        $user->rol = 'admin'; // Siempre admin para registro público
+    // En el método register, agregar validación para cédula de médicos
+public function register() {
+    $user = new User();
+    $user->nombre = $_POST['nombre'] ?? '';
+    $user->email = $_POST['email'] ?? '';
+    $user->password = $_POST['password'] ?? '';
+    $user->rol = 'admin';
+    $user->cedula = $_POST['cedula'] ?? ''; // Nueva línea para cédula de médicos
 
-        // Validación básica
-        if(empty($user->nombre) || empty($user->email) || empty($user->password)) {
-            $error = "Todos los campos son obligatorios.";
-            require 'views/auth/register.php';
-            return;
-        }
-
-        if($user->emailExists()) {
-            $error = "El email ya está registrado.";
-            require 'views/auth/register.php';
-            return;
-        }
-
-        if($user->register()) {
-            $success = "Registro exitoso. Por favor inicia sesión.";
-            require 'views/auth/login.php';
-        } else {
-            $error = "Error al registrar usuario.";
-            require 'views/auth/register.php';
-        }
+    // Validación básica
+    if(empty($user->nombre) || empty($user->email) || empty($user->password) || empty($user->cedula)) {
+        $error = "Todos los campos son obligatorios.";
+        require 'views/auth/register.php';
+        return;
     }
+
+    if($user->emailExists()) {
+        $error = "El email ya está registrado.";
+        require 'views/auth/register.php';
+        return;
+    }
+
+    // Verificar si la cédula ya existe
+    if($user->cedulaExists($user->cedula)) {
+        $error = "La cédula ya está registrada.";
+        require 'views/auth/register.php';
+        return;
+    }
+
+    if($user->register()) {
+        $success = "Registro exitoso. Por favor inicia sesión.";
+        require 'views/auth/login.php';
+    } else {
+        $error = "Error al registrar usuario.";
+        require 'views/auth/register.php';
+    }
+}
 
     /**
      * Cerrar sesión

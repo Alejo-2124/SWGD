@@ -36,6 +36,11 @@
             <label for="nombre">Nombre Completo</label>
             <input type="text" id="nombre" name="nombre" class="form-control" required>
         </div>
+        
+        <div class="form-group">
+            <label for="cedula">Cédula de Identidad *</label>
+            <input type="text" id="cedula" name="cedula" class="form-control" required>
+        </div>
 
         <div class="form-group">
             <label for="email">Correo Electrónico</label>

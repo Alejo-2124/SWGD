@@ -20,6 +20,13 @@ class PatientController {
                 return;
             }
 
+            // Verificar si la cédula ya existe
+            $cedula = $_POST['cedula'] ?? '';
+            if(!empty($cedula) && $user->cedulaExists($cedula)) {
+                redirect('dashboard?error=' . urlencode("La cédula ya está registrada en el sistema."));
+                return;
+            }
+
             // Generar contraseña temporal
             $temp_password = $this->generateTempPassword();
             
@@ -31,17 +38,18 @@ class PatientController {
                 'edad' => !empty($_POST['edad']) ? (int)$_POST['edad'] : null,
                 'genero' => $_POST['genero'] ?? '',
                 'telefono' => $_POST['telefono'] ?? '',
-                'direccion' => $_POST['direccion'] ?? ''
+                'direccion' => $_POST['direccion'] ?? '',
+                'cedula' => $cedula
             ];
 
             // Validaciones
-            if(empty($patient_data['nombre']) || empty($patient_data['email'])) {
-                redirect('dashboard?error=' . urlencode("Nombre y email son obligatorios."));
+            if(empty($patient_data['nombre']) || empty($patient_data['email']) || empty($patient_data['cedula'])) {
+                redirect('dashboard?error=' . urlencode("Nombre, email y cédula son obligatorios."));
                 return;
             }
 
             if($user->createPatient($patient_data)) {
-                $success_message = "Paciente agregado exitosamente. Contraseña temporal: " . $temp_password;
+                $success_message = "Paciente agregado exitosamente. Contraseña temporal: <strong>" . $temp_password . "</strong>";
                 redirect('dashboard?success=' . urlencode($success_message));
             } else {
                 redirect('dashboard?error=' . urlencode("Error al agregar paciente."));
@@ -50,7 +58,7 @@ class PatientController {
     }
 
     /**
-     * Mostrar lista de pacientes del médico logueado
+     * Mostrar lista de pacientes del médico logueado con filtros
      */
     public function list() {
         if(!isAdmin()) {
@@ -58,8 +66,13 @@ class PatientController {
         }
 
         $userModel = new User();
-        // Solo mostrar los pacientes que este médico creó
-        $patients = $userModel->getPatientsByDoctor($_SESSION['user_id']);
+        
+        // Obtener parámetros de búsqueda
+        $search = $_GET['search'] ?? '';
+        $filter_type = $_GET['filter_type'] ?? 'nombre';
+        
+        // Solo mostrar los pacientes que este médico creó, con filtros aplicados
+        $patients = $userModel->getPatientsByDoctor($_SESSION['user_id'], $search, $filter_type);
         
         // Cargar vista de lista de pacientes
         require 'views/dashboard/patient_list.php';
