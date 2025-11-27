@@ -141,10 +141,22 @@ body {
 .btn-primary {
   background-color: var(--primary-color);
   color: white;
+  width: 100%;
+
 }
 
 .btn-primary:hover {
   background-color: #1a3c5a;
+}
+
+.btn-eye {
+    background-color: var(--primary-color);
+    color: white;
+    width: 20%;
+}
+
+.btn-eye:hover {
+    background-color: #1a3c5a;
 }
 
 .btn-secondary {
@@ -166,19 +178,41 @@ body {
 }
 
 .btn-outline {
-  background: transparent;
+  background: var(--primary-color);
   border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  color: white;
 }
 
 .btn-outline:hover {
-  background: var(--primary-color);
+  background: var(--text-primary);
   color: white;
 }
 
 .btn-sm {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
+}
+
+/* NUEVO: Botón Info para acciones de visualización */
+.btn-info {
+    background-color: var(--info-color);
+    color: #138496;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+    color: white;
 }
 
 /* ==========================================================================
@@ -256,6 +290,10 @@ body {
 
 .auth-header p {
   color: var(--text-secondary);
+}
+
+.auth-container .btn {
+  width: 100%;
 }
 
 /* ==========================================================================
@@ -540,6 +578,12 @@ body {
     gap: 0.25rem;
   }
   
+  .document-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Responsive para botones en patient_list.php */
   .btn-sm {
     padding: 0.3rem 0.5rem;
     font-size: 0.8rem;
@@ -639,3 +683,4 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+

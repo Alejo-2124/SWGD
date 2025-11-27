@@ -16,7 +16,7 @@
             <?php if(isLoggedIn()): ?>
                 <span>Hola, <?php echo $_SESSION['user_name']; ?></span>
                 <?php if($_SESSION['user_role'] === 'admin'): ?>
-                    <a href="<?php echo BASE_URL; ?>/dashboard">Dashboard Médico</a>
+                    <a href="<?php echo BASE_URL; ?>/dashboard">Inicio</a>
                     <a href="<?php echo BASE_URL; ?>/patients/list">Lista de Pacientes</a>
                 <?php else: ?>
                     <a href="<?php echo BASE_URL; ?>/dashboard-patient">Mi Historial</a>

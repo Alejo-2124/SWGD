@@ -19,6 +19,9 @@
                 <div>
                     <strong>Email:</strong> <?php echo htmlspecialchars($patient_info['email']); ?>
                 </div>
+                <div>
+                    <strong>Cédula:</strong> <?php echo htmlspecialchars($patient_info['cedula'] ?? 'No especificada'); ?>
+                </div>
                 <?php if(isset($patient_info['edad']) && $patient_info['edad']): ?>
                     <div>
                         <strong>Edad:</strong> <?php echo htmlspecialchars($patient_info['edad']); ?> años
@@ -64,13 +67,37 @@
                 <?php if($documents->rowCount() > 0): ?>
                     <?php while($doc = $documents->fetch(PDO::FETCH_ASSOC)): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($doc['nombre_archivo']); ?></td>
+                            <td>
+                                <span class="document-icon">
+                                    <?php 
+                                    $extension = pathinfo($doc['nombre_archivo'], PATHINFO_EXTENSION);
+                                    switch(strtolower($extension)) {
+                                        case 'pdf': echo '📄'; break;
+                                        case 'jpg': case 'jpeg': case 'png': echo '🖼️'; break;
+                                        case 'doc': case 'docx': echo '📝'; break;
+                                        default: echo '📎';
+                                    }
+                                    ?>
+                                </span>
+                                <?php echo htmlspecialchars($doc['nombre_archivo']); ?>
+                            </td>
                             <td><?php echo htmlspecialchars($doc['admin_nombre']); ?></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($doc['fecha_subida'])); ?></td>
                             <td><?php echo formatFileSize($doc['tamano']); ?></td>
                             <td>
-                                <a href="<?php echo BASE_URL; ?>/documents/download?id=<?php echo $doc['id']; ?>" 
-                                    class="btn btn-sm btn-secondary">Descargar</a>
+                                <div class="document-actions">
+                                    <a href="<?php echo BASE_URL; ?>/documents/view?id=<?php echo $doc['id']; ?>" 
+                                        class="btn btn-sm btn-primary" 
+                                        target="_blank"
+                                        title="Ver documento en el navegador">
+                                        <span class="btn-icon">👁️</span> Ver
+                                    </a>
+                                    <a href="<?php echo BASE_URL; ?>/documents/download?id=<?php echo $doc['id']; ?>" 
+                                        class="btn btn-sm btn-secondary"
+                                        title="Descargar documento">
+                                        <span class="btn-icon">⬇️</span> Descargar
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -85,5 +112,28 @@
         </table>
     </div>
 </div>
+
+<style>
+.document-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-icon {
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .document-actions {
+        flex-direction: column;
+    }
+    
+    .document-actions .btn {
+        justify-content: center;
+        text-align: center;
+    }
+}
+</style>
 
 <?php require 'views/layout/footer.php'; ?>

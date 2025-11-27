@@ -21,8 +21,14 @@ spl_autoload_register(function ($class_name) {
 
 // Routing básico
 $request = $_SERVER['REQUEST_URI'];
-$path = parse_url($request, PHP_URL_PATH);
+$base_path = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+$path = str_replace($base_path, '', $request);
 $path = trim($path, '/');
+
+// Limpiar parámetros GET del path
+if (strpos($path, '?') !== false) {
+    $path = substr($path, 0, strpos($path, '?'));
+}
 
 // Rutas
 switch ($path) {
@@ -48,12 +54,12 @@ switch ($path) {
         }
         break;
         
-    case 'login-patient': // Cambiado de 'login-pacientes' a 'login-patient'
+    case 'login-patient':
         $controller = new AuthController();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $controller->loginPatient(); // Cambiado de loginPacientes a loginPatient
+            $controller->loginPatient();
         } else {
-            $controller->showLoginPatient(); // Cambiado de showLoginPacientes a showLoginPatient
+            $controller->showLoginPatient();
         }
         break;
 
@@ -76,9 +82,9 @@ switch ($path) {
         $controller->indexAdmin();
         break;
 
-    case 'dashboard-patient': // Cambiado de 'dashboard-paciente' a 'dashboard-patient'
+    case 'dashboard-patient':
         $controller = new DashboardController();
-        $controller->indexPatient(); // Cambiado de indexPaciente a indexPatient
+        $controller->indexPatient();
         break;
 
     case 'documents/upload':
@@ -89,6 +95,11 @@ switch ($path) {
     case 'documents/download':
         $controller = new DocumentController();
         $controller->download();
+        break;
+
+    case 'documents/view':
+        $controller = new DocumentController();
+        $controller->view();
         break;
 
     case 'documents/delete':

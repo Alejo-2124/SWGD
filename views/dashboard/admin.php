@@ -21,24 +21,23 @@
         </div>
         <form action="<?php echo BASE_URL; ?>/patients/add" method="POST">
             <div class="form-group">
-                <label for="nombre">Nombre Completo *</label>
-                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                <label for="nombre">Nombre Completo </label>
+                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese el nombre" required>
             </div>
 
             <div class="form-group">
                 <label for="edad">Edad</label>
-                <input type="number" id="edad" name="edad" class="form-control" min="0" max="120">
+                <input type="number" id="edad" name="edad" class="form-control" min="0" max="120" placeholder="Ingrese la edad" required>
             </div>
 
             <div class="form-group">
-                <label for="cedula">Cédula de Identidad *</label>
-                <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ingrese la cédula del paciente" required>
-                <small style="color: var(--text-secondary);">La cédula debe ser única para cada paciente</small>
+                <label for="cedula">Cédula de Identidad </label>
+                <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ingrese la cédula" required>
             </div>
 
             <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <label for="email">Email </label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Ingrese el email" required>
             </div>
 
             <div class="form-group">
@@ -47,18 +46,17 @@
                     <option value="">Seleccionar...</option>
                     <option value="masculino">Masculino</option>
                     <option value="femenino">Femenino</option>
-                    <option value="otro">Otro</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="tel" id="telefono" name="telefono" class="form-control">
+                <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Ingrese el teléfono">
             </div>
 
             <div class="form-group">
                 <label for="direccion">Dirección</label>
-                <textarea id="direccion" name="direccion" class="form-control" rows="3"></textarea>
+                <textarea id="direccion" name="direccion" class="form-control" rows="3" placeholder="Ingrese la dirección"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Agregar Paciente</button>
@@ -140,7 +138,7 @@
                             <td><?php echo formatFileSize($doc['tamano']); ?></td>
                             <td>
                                 <a href="<?php echo BASE_URL; ?>/documents/download?id=<?php echo $doc['id']; ?>" class="btn btn-sm btn-secondary">Descargar</a>
-                                <a href="<?php echo BASE_URL; ?>/documents/delete?id=<?php echo $doc['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este documento?');">Eliminar</a>
+                                <a href="<?php echo BASE_URL; ?>/documents/delete?id=<?php echo $doc['id']; ?>&redirect_to=dashboard" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este documento?');">Eliminar</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>

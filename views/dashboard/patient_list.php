@@ -4,7 +4,7 @@
     <h1>Lista de Mis Pacientes</h1>
     <p>Gestión completa de pacientes registrados por usted</p>
     <div class="header-actions">
-        <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">← Volver al Dashboard</a>
+        <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary"> Volver al inicio</a>
     </div>
 </div>
 
@@ -113,7 +113,7 @@
                                 ?>
                             </td>
                             <td>
-                                <strong><?php echo htmlspecialchars($patient['cedula'] ?? 'N/A'); ?></strong>
+                                <?php echo htmlspecialchars($patient['cedula'] ?? 'N/A'); ?>
                             </td>
                             <td><?php echo htmlspecialchars($patient['email']); ?></td>
                             <td>
@@ -181,16 +181,22 @@
                                                             <td><?php echo formatFileSize($doc['tamano']); ?></td>
                                                             <td>
                                                                 <div class="document-actions">
+                                                                    <a href="<?php echo BASE_URL; ?>/documents/view?id=<?php echo $doc['id']; ?>" 
+                                                                        class="btn btn-sm btn-eye" 
+                                                                        target="_blank"
+                                                                        title="Ver documento en el navegador">
+                                                                        <span class="btn-icon">👁️</span> Ver
+                                                                    </a>
                                                                     <a href="<?php echo BASE_URL; ?>/documents/download?id=<?php echo $doc['id']; ?>" 
                                                                         class="btn btn-sm btn-secondary" 
                                                                         title="Descargar documento">
-                                                                        ⬇️ Descargar
+                                                                        <span class="btn-icon">⬇️</span> Descargar
                                                                     </a>
                                                                     <a href="<?php echo BASE_URL; ?>/documents/delete?id=<?php echo $doc['id']; ?>" 
                                                                         class="btn btn-sm btn-danger" 
                                                                         onclick="return confirm('¿Está seguro de eliminar el documento \\'<?php echo addslashes($doc['nombre_archivo']); ?>\'?');"
                                                                         title="Eliminar documento">
-                                                                        🗑️ Eliminar
+                                                                        <span class="btn-icon">🗑️</span> Eliminar
                                                                     </a>
                                                                 </div>
                                                             </td>
@@ -231,5 +237,28 @@
         </table>
     </div>
 </div>
+
+<style>
+.document-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-icon {
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .document-actions {
+        flex-direction: column;
+    }
+    
+    .document-actions .btn {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
 
 <?php require 'views/layout/footer.php'; ?>

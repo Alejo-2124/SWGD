@@ -109,6 +109,57 @@ class DocumentController {
         }
     }
 
+    /**
+     * Visualizar documento directamente en el navegador
+     */
+    public function view() {
+        if(!isLoggedIn()) {
+            redirect('login');
+        }
+
+        $id = $_GET['id'] ?? null;
+        if(!$id) {
+            die("ID de documento no proporcionado.");
+        }
+
+        $documentModel = new Document();
+        $userModel = new User();
+        $doc = $documentModel->getDocumentById($id);
+
+        if(!$doc) {
+            die("Documento no encontrado.");
+        }
+
+        // Verificar permisos según el rol
+        if(isAdmin()) {
+            // Médico: solo puede ver documentos de sus pacientes
+            if(!$userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
+                die("Acceso denegado. No tiene permisos para este documento.");
+            }
+        } else {
+            // Paciente: solo puede ver sus propios documentos
+            if($doc['paciente_id'] != $_SESSION['user_id']) {
+                die("Acceso denegado.");
+            }
+        }
+
+        $filepath = UPLOAD_DIR . $doc['ruta'];
+
+        if(file_exists($filepath)) {
+            // Configurar headers para visualización en línea
+            header('Content-Type: ' . $doc['tipo_mime']);
+            header('Content-Disposition: inline; filename="'. $doc['nombre_archivo'] .'"');
+            header('Content-Length: ' . filesize($filepath));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
+            
+            readfile($filepath);
+            exit;
+        } else {
+            die("El archivo físico no existe en: " . $filepath);
+        }
+    }
+
     public function delete() {
         if(!isAdmin()) {
             redirect('dashboard');
@@ -123,8 +174,8 @@ class DocumentController {
             
             if($doc && $userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
                 if($documentModel->deleteDocument($id)) {
-                    // CAMBIO: Redirigir a patient_list en lugar de dashboard
-                    redirect('patients/list?success=' . urlencode("Documento eliminado correctamente."));
+                    // Redirigir a patient_list en lugar de dashboard
+                    redirect('dashboard?success=' . urlencode("Documento eliminado correctamente."));
                 } else {
                     redirect('patients/list?error=' . urlencode("Error al eliminar documento."));
                 }
