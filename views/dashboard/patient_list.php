@@ -162,7 +162,7 @@
                                                 <tbody>
                                                     <?php foreach($documents_data as $doc): ?>
                                                         <tr>
-                                                            <td>
+                                                            <td class="filename-cell">
                                                                 <span class="document-icon">
                                                                     <?php 
                                                                     $extension = pathinfo($doc['nombre_archivo'], PATHINFO_EXTENSION);
@@ -174,7 +174,9 @@
                                                                     }
                                                                     ?>
                                                                 </span>
-                                                                <?php echo htmlspecialchars($doc['nombre_archivo']); ?>
+                                                                <span class="filename-text" title="<?php echo htmlspecialchars($doc['nombre_archivo']); ?>">
+                                                                    <?php echo htmlspecialchars($doc['nombre_archivo']); ?>
+                                                                </span>
                                                             </td>
                                                             <td><?php echo htmlspecialchars($doc['admin_nombre']); ?></td>
                                                             <td><?php echo date('d/m/Y H:i', strtotime($doc['fecha_subida'])); ?></td>
@@ -192,7 +194,7 @@
                                                                         title="Descargar documento">
                                                                         <span class="btn-icon">⬇️</span> Descargar
                                                                     </a>
-                                                                    <a href="<?php echo BASE_URL; ?>/documents/delete?id=<?php echo $doc['id']; ?>" 
+                                                                    <a href="<?php echo BASE_URL; ?>/documents/delete?id=<?php echo $doc['id']; ?>&redirect_to=patient_list" 
                                                                         class="btn btn-sm btn-danger" 
                                                                         onclick="return confirm('¿Está seguro de eliminar el documento \\'<?php echo addslashes($doc['nombre_archivo']); ?>\'?');"
                                                                         title="Eliminar documento">
@@ -237,28 +239,5 @@
         </table>
     </div>
 </div>
-
-<style>
-.document-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.btn-icon {
-    font-size: 0.9em;
-}
-
-@media (max-width: 768px) {
-    .document-actions {
-        flex-direction: column;
-    }
-    
-    .document-actions .btn {
-        justify-content: center;
-        text-align: center;
-    }
-}
-
 
 <?php require 'views/layout/footer.php'; ?>

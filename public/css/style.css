@@ -152,7 +152,7 @@ body {
 .btn-eye {
     background-color: var(--primary-color);
     color: white;
-    width: 20%;
+    
 }
 
 .btn-eye:hover {
@@ -682,5 +682,36 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Fix for long filenames in patient list */
+.filename-cell {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.filename-text {
+    vertical-align: middle;
+}
+
+/* Ensure document actions don't break layout */
+.document-actions {
+    min-width: 260px; /* Ensure enough space for buttons */
+    flex-wrap: nowrap; /* Prevent wrapping if possible */
+}
+
+@media (max-width: 768px) {
+    .filename-cell {
+        max-width: 150px; /* Smaller max-width on mobile */
+    }
+    
+    .document-actions {
+        min-width: auto;
+        flex-wrap: wrap; /* Allow wrapping on mobile */
+    }
 }
 

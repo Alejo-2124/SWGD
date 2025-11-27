@@ -146,8 +146,25 @@ class DocumentController {
         $filepath = UPLOAD_DIR . $doc['ruta'];
 
         if(file_exists($filepath)) {
+            // Determinar tipo MIME basado en extensión para asegurar visualización correcta
+            $extension = strtolower(pathinfo($doc['nombre_archivo'], PATHINFO_EXTENSION));
+            $mime_type = $doc['tipo_mime'];
+
+            $mime_types = [
+                'pdf' => 'application/pdf',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'txt' => 'text/plain'
+            ];
+
+            if (array_key_exists($extension, $mime_types)) {
+                $mime_type = $mime_types[$extension];
+            }
+
             // Configurar headers para visualización en línea
-            header('Content-Type: ' . $doc['tipo_mime']);
+            header('Content-Type: ' . $mime_type);
             header('Content-Disposition: inline; filename="'. $doc['nombre_archivo'] .'"');
             header('Content-Length: ' . filesize($filepath));
             header('Cache-Control: private, max-age=0, must-revalidate');
@@ -167,6 +184,8 @@ class DocumentController {
 
         $id = $_GET['id'] ?? null;
         if($id) {
+            $redirect_to = $_GET['redirect_to'] ?? 'dashboard';
+            
             // Verificar permisos antes de eliminar
             $documentModel = new Document();
             $userModel = new User();
@@ -174,16 +193,36 @@ class DocumentController {
             
             if($doc && $userModel->isPatientOfDoctor($doc['paciente_id'], $_SESSION['user_id'])) {
                 if($documentModel->deleteDocument($id)) {
-                    // Redirigir a patient_list en lugar de dashboard
-                    redirect('dashboard?success=' . urlencode("Documento eliminado correctamente."));
+                    // Redirigir según el parámetro redirect_to
+                    if($redirect_to === 'patient_list') {
+                        redirect('patients/list?success=' . urlencode("Documento eliminado correctamente."));
+                    } else {
+                        redirect('dashboard?success=' . urlencode("Documento eliminado correctamente."));
+                    }
                 } else {
-                    redirect('patients/list?error=' . urlencode("Error al eliminar documento."));
+                    // Redirigir con error según el parámetro redirect_to
+                    if($redirect_to === 'patient_list') {
+                        redirect('patients/list?error=' . urlencode("Error al eliminar documento."));
+                    } else {
+                        redirect('dashboard?error=' . urlencode("Error al eliminar documento."));
+                    }
                 }
             } else {
-                redirect('patients/list?error=' . urlencode("No tiene permisos para eliminar este documento."));
+                // Redirigir con error de permisos según el parámetro redirect_to
+                if($redirect_to === 'patient_list') {
+                    redirect('patients/list?error=' . urlencode("No tiene permisos para eliminar este documento."));
+                } else {
+                    redirect('dashboard?error=' . urlencode("No tiene permisos para eliminar este documento."));
+                }
             }
         } else {
-            redirect('patients/list');
+            // Redirigir según el parámetro redirect_to cuando no hay ID
+            $redirect_to = $_GET['redirect_to'] ?? 'dashboard';
+            if($redirect_to === 'patient_list') {
+                redirect('patients/list');
+            } else {
+                redirect('dashboard');
+            }
         }
     }
 }

@@ -87,7 +87,7 @@
                             <td>
                                 <div class="document-actions">
                                     <a href="<?php echo BASE_URL; ?>/documents/view?id=<?php echo $doc['id']; ?>" 
-                                        class="btn btn-sm btn-primary" 
+                                        class="btn btn-sm btn-eye" 
                                         target="_blank"
                                         title="Ver documento en el navegador">
                                         <span class="btn-icon">👁️</span> Ver
